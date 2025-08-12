@@ -95,13 +95,50 @@ O script de scraping coleta as seguintes informações de cada livro:
 - **Requests**: Requisições HTTP
 - **Uvicorn**: Servidor ASGI
 
-## Deploy
+## Deploy no Vercel
 
-Para deploy em produção, configure as variáveis de ambiente necessárias e utilize plataformas como:
-- Heroku
-- Render
-- Railway
-- AWS/GCP/Azure
+### Pré-requisitos
+1. Conta no [Vercel](https://vercel.com)
+2. [Vercel CLI](https://vercel.com/cli) instalado (opcional)
+3. Git configurado
+
+### Passos para Deploy
+
+1. **Execute o scraping localmente** (dados são necessários para a API):
+```bash
+python scripts/scrape_books.py
+```
+
+2. **Remova o CSV do .gitignore temporariamente**:
+```bash
+# Comente a linha no .gitignore:
+# data/books.csv
+```
+
+3. **Faça push para o GitHub**:
+```bash
+git add .
+git commit -m "Deploy inicial"
+git push origin main
+```
+
+4. **Deploy via Vercel Dashboard**:
+- Acesse [vercel.com](https://vercel.com)
+- Conecte seu repositório GitHub
+- Clique em "Deploy"
+
+**OU via CLI:**
+```bash
+npx vercel
+```
+
+### Arquivos de Deploy
+- `vercel.json`: Configuração do Vercel
+- `requirements.txt`: Lista as dependências
+
+### URLs da Aplicação
+- API: `https://seu-projeto.vercel.app`
+- Docs: `https://seu-projeto.vercel.app/docs`
 
 ## Exemplo de Uso
 
