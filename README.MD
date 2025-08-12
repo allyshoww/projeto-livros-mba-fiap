@@ -25,8 +25,10 @@ Projeto Livros/
 ├── data/
 │   └── books.csv            # Dados extraídos (gerado após scraping)
 ├── docs/                    # Documentação adicional
+│   └── PIPELINE_DIAGRAM.md  # Diagramas do pipeline
 ├── tests/                   # Testes (opcional)
 ├── requirements.txt         # Dependências Python
+├── ARQUITETURA.md          # Plano arquitetural completo
 └── README.md               # Este arquivo
 ```
 
@@ -140,8 +142,147 @@ npx vercel
 - API: `https://seu-projeto.vercel.app`
 - Docs: `https://seu-projeto.vercel.app/docs`
 
-## Exemplo de Uso
+### Validação do Deploy
 
+Após o deploy, valide se a API está funcionando:
+
+#### Teste Manual (Rápido)
+```bash
+curl https://seu-projeto.vercel.app/api/v1/health
+```
+
+#### Teste Automatizado (Completo)
+```bash
+python validate_api.py https://seu-projeto.vercel.app
+```
+
+**O script `validate_api.py` testa automaticamente:**
+- ✅ Health check
+- ✅ Listagem de livros
+- ✅ Busca por título
+- ✅ Busca por categoria
+- ✅ Livro específico
+- ✅ Lista de categorias
+- ✅ Documentação Swagger
+
+**Exemplo de saída:**
+```
+🔍 Testando API em: https://seu-projeto.vercel.app
+--------------------------------------------------
+Health Check         ✅ OK
+Listar Livros        ✅ OK
+Buscar por Título    ✅ OK
+Buscar por Categoria ✅ OK
+Livro Específico     ✅ OK
+Categorias           ✅ OK
+Documentação         ✅ OK
+--------------------------------------------------
+Resultado: 7/7 testes passaram
+🎉 API funcionando perfeitamente!
+```
+
+## Exemplos de Uso com Requests/Responses
+
+### 1. Health Check
+**Request:**
+```bash
+GET /api/v1/health
+```
+**Response:**
+```json
+{
+  "status": "ok",
+  "message": "API funcionando normalmente."
+}
+```
+
+### 2. Listar Livros
+**Request:**
+```bash
+GET /api/v1/books?limit=2&skip=0
+```
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "title": "It's Only the Himalayas",
+    "price": 45.17,
+    "rating": 2,
+    "availability": "In stock",
+    "category": "Travel",
+    "image_url": "https://books.toscrape.com/media/cache/27/a5/27a53d0bb95bdd88288eaf66c9230d7e.jpg"
+  },
+  {
+    "id": 2,
+    "title": "Full Moon over Noah's Ark",
+    "price": 49.43,
+    "rating": 4,
+    "availability": "In stock",
+    "category": "Travel",
+    "image_url": "https://books.toscrape.com/media/cache/57/77/57770cac1628f4407636635f4b85e88c.jpg"
+  }
+]
+```
+
+### 3. Buscar Livros
+**Request:**
+```bash
+GET /api/v1/books/search?category=Fiction&title=the
+```
+**Response:**
+```json
+[
+  {
+    "id": 15,
+    "title": "The Coming Woman: A Novel Based on the Life of the Infamous Feminist, Victoria Woodhull",
+    "price": 17.93,
+    "rating": 3,
+    "availability": "In stock",
+    "category": "Fiction",
+    "image_url": "https://books.toscrape.com/media/cache/3d/54/3d54940e57e662c4dd1f3ff00c78cc64.jpg"
+  }
+]
+```
+
+### 4. Livro Específico
+**Request:**
+```bash
+GET /api/v1/books/1
+```
+**Response:**
+```json
+{
+  "id": 1,
+  "title": "It's Only the Himalayas",
+  "price": 45.17,
+  "rating": 2,
+  "availability": "In stock",
+  "category": "Travel",
+  "image_url": "https://books.toscrape.com/media/cache/27/a5/27a53d0bb95bdd88288eaf66c9230d7e.jpg"
+}
+```
+
+### 5. Listar Categorias
+**Request:**
+```bash
+GET /api/v1/categories
+```
+**Response:**
+```json
+{
+  "categories": [
+    "Travel",
+    "Mystery",
+    "Historical Fiction",
+    "Sequential Art",
+    "Classics",
+    "Philosophy"
+  ]
+}
+```
+
+### Código Python de Exemplo
 ```python
 import requests
 
